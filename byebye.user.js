@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         のすりばいばい
-// @namespace    http://tampermonkey.net/
-// @version      0.1.1
+// @namespace    https://mtave1202.github.io/emoji-create/byebye.user.js
+// @version      0.1.2
 // @description  ばいばいしようね
 // @author       You
 // @include     /^https?://tw7\.t-walker\.jp/scenario/show/
@@ -35,7 +35,7 @@
           });
       });
       $('img[src$="g01118_ic.png"]').attr("src", "https://cdn.tw7.t-walker.jp/html/world/img/manual/minai_b.png");
-      $('.txt').each(function() {
+      $('.playing-view._baka,.txt.jumptarget,#counsel').each(function() {
           $(this)[0].innerHTML = $(this)[0].innerHTML.split('ノスリ・アスターゼイン').join('【放送禁止用語】');
           $(this)[0].innerHTML = $(this)[0].innerHTML.split('ノスリ').join('【放送禁止用語】');
       });
