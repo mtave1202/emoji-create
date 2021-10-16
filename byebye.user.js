@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         のすりばいばい
 // @namespace    https://mtave1202.github.io/emoji-create/byebye.user.js
-// @version      0.1.2
+// @version      0.1.3
 // @description  ばいばいしようね
 // @author       You
 // @include     /^https?://tw7\.t-walker\.jp/scenario/show/
@@ -15,7 +15,7 @@
     var $show = $('<input type="checkbox">').attr("id", id);
     var $label = $('<label>').append($show).append("バカも表示");
     $(document).on("change", "#"+id, function() {
-        $('._baka').toggle($(this).prop("checked"));
+        $('._baka:not(.hidden)').toggle($(this).prop("checked"));
     });
     const hiddens = {
         "g01118": "ノスリ",
