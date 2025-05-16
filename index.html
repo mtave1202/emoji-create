@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta content="width=320, user-scalable=no" name="viewport">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>絵文字ツクール</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style type="text/css">
+.form-inline input[type='color'].form-control{
+	width: 6em;
+}
+canvas {
+	border: 1px solid #ccc;
+}
+</style>
+</head>
+<body id='index_page'>
+<div id='wrapper' class="container py-2">
+	<div class="row mb-2 align-items-center">
+		<canvas id="canvas" width="128" height="128"></canvas>
+		<p>←画像クリックで保存</p>
+	</div>
+	<div class="row">
+		<form id='form'>
+			<div class="form-group">
+				<label for="input_text">2行までOK</label>
+				<textarea id='input_text' class="form-control">正解</textarea>
+			</div>
+			<div class="form-group">
+				<label for="input_font">フォント</label>
+				<input type='text' id='input_font' value='sans-serif' class="form-control"/>
+			</div>
+			<div class="form-group">
+				<label for="color">文字色</label>
+				<input type='color' id='color' value='#1111dd' class="form-control"/>
+			</div>
+		</form>
+	</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script>
+$(function() {
+	const CANVAS_SIZE = 128;
+	var canvas2d = document.getElementById('canvas').getContext('2d');
+	var onChange = function(){
+		draw( $('#input_text').val(), 'bold 64px '+$('#input_font').val(), $('#color').val() );
+	};
+
+	var draw = function(str, font, color ){
+		var margin = 2;
+		canvas2d.font = font;
+		canvas2d.fillStyle = color;
+		canvas2d.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+		let strs = str.split(/\r\n|\r|\n/);
+		let maxRow = strs.length;
+		$.each(strs, function(row, str) {
+			let len = str.length;
+			let fontSize = len <= 2 ? (CANVAS_SIZE / 2) - 2 : (CANVAS_SIZE / len) - 2;
+			fontSize = Math.ceil(fontSize);
+			let start = len === 1 ? (CANVAS_SIZE / 2) - (fontSize / 2) : 1;
+			let addLeft = fontSize + 2;
+			let x = start;
+			let y = maxRow === 1 ? (CANVAS_SIZE / 2) + (CANVAS_SIZE / 4) - 8 : 56 + (row * (CANVAS_SIZE / 2));
+			for (var i = 0; i < len; i++) {
+				let c = str.charAt(i);
+				canvas2d.fillText(c, x, y, fontSize);
+				x = x + addLeft;
+			}
+		});
+	}
+
+	var load = function(){
+		$.each(['text','font','color'],function(index,key){
+			var val = urlParams(key);
+			if (val){
+				$('#input_'+key).val(val);
+			}
+		});
+	}
+
+	var urlParams = function(key){
+		var ret = undefined;
+		var match = location.search.match(new RegExp(key+'=(.*?)(&|$)'));
+		if(match) {
+			ret = decodeURIComponent(match[1]);
+		}
+		return ret;
+	};
+
+	document.getElementById("canvas").onclick = (event) => {
+		let canvas = document.getElementById("canvas");
+		let link = document.createElement("a");
+		link.href = canvas.toDataURL("image/png");
+		link.download = "icon.png";
+		link.click();
+	}
+
+	$('input,textarea').on('keyup change', onChange);
+	load();
+	onChange();
+});
+</script>
+</body>
+</html>
